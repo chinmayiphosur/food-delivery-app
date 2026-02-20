@@ -1444,6 +1444,15 @@
                         <label>Delivery Address</label>
                         <input type="text" id="order-address" placeholder="123 Main St, Apt 4B...">
                     </div>
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select id="order-payment">
+                            <option value="Cash on Delivery">💵 Cash on Delivery</option>
+                            <option value="Credit Card">💳 Credit Card</option>
+                            <option value="Debit Card">🏦 Debit Card</option>
+                            <option value="QR Code (PhonePe/GPay)">📱 QR Code (PhonePe/GPay)</option>
+                        </select>
+                    </div>
                     <button class="btn btn-success btn-full" onclick="placeOrder()">🛒 Place Order</button>
                 </div>
             </div>
@@ -1541,12 +1550,13 @@
         async function placeOrder() {
             const rid = document.getElementById('order-restaurant').value;
             const addr = document.getElementById('order-address').value.trim();
+            const pay = document.getElementById('order-payment').value;
             if (!rid) return toast('Select a restaurant', 'error');
             if (!addr) return toast('Enter delivery address', 'error');
             const items = Object.entries(cart).map(([menu_item_id, quantity]) => ({ menu_item_id, quantity }));
             if (items.length === 0) return toast('Add items from the menu', 'error');
             try {
-                await api('POST', '/api/orders', { restaurant_id: rid, items, delivery_address: addr });
+                await api('POST', '/api/orders', { restaurant_id: rid, items, delivery_address: addr, payment_method: pay });
                 cart = {};
                 toast('Order placed successfully! 🎉');
                 refreshOrders();
@@ -1710,6 +1720,7 @@
                 <div class="order-items-summary">${items}</div>
                 <div class="order-meta">
                     <span>💰 $${(o.total_amount || 0).toFixed(2)}</span>
+                    <span title="Payment Method">💳 ${o.payment_method || 'N/A'}</span>
                     <span>📍 ${o.delivery_address || 'N/A'}</span>
                     <span>🕐 ${time}</span>
                 </div>
@@ -1723,6 +1734,7 @@
             let btns = '';
             if (role === 'customer') {
                 if (s === 'PLACED') btns += mkBtn('CANCELLED', '❌ Cancel', 'btn-danger btn-sm', order.id);
+                if (s === 'OUT_FOR_DELIVERY') btns += mkBtn('DELIVERED', '✅ Confirm Delivery', 'btn-success btn-sm', order.id);
             } else if (role === 'restaurant') {
                 if (s === 'PLACED') { btns += mkBtn('CONFIRMED', '✅ Accept', 'btn-success btn-sm', order.id); btns += mkBtn('CANCELLED', '❌ Reject', 'btn-danger btn-sm', order.id); }
                 if (s === 'CONFIRMED') btns += mkBtn('PREPARING', '🍳 Start Cooking', 'btn-warning btn-sm', order.id);
@@ -1767,7 +1779,10 @@
                 <span class="status-badge status-${order.status}">${order.status.replace(/_/g, ' ')}</span>
             </div>
             <div style="font-size:11px;color:var(--text-muted);margin-bottom:16px;font-family:monospace">ID: ${order.id}</div>
-            <div style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">📍 ${order.delivery_address || 'N/A'}</div>
+            <div style="display:flex;gap:16px;margin-bottom:16px">
+                <div style="font-size:13px;color:var(--text-secondary)">📍 ${order.delivery_address || 'N/A'}</div>
+                <div style="font-size:13px;color:var(--text-secondary)">💳 ${order.payment_method || 'N/A'}</div>
+            </div>
             <div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:16px">
                 <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Items</div>
                 ${itemsHtml}

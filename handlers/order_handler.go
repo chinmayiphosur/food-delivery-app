@@ -51,6 +51,10 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		respondError(w, http.StatusBadRequest, "delivery_address is required")
 		return
 	}
+	if req.PaymentMethod == "" {
+		respondError(w, http.StatusBadRequest, "payment_method is required")
+		return
+	}
 
 	// Verify the restaurant exists.
 	restaurant, err := h.Store.GetUser(req.RestaurantID)
@@ -98,6 +102,7 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		TotalAmount:     total,
 		Status:          models.StatusPlaced,
 		DeliveryAddress: req.DeliveryAddress,
+		PaymentMethod:   req.PaymentMethod,
 		StatusHistory: []models.StatusChange{
 			{
 				FromStatus: "",

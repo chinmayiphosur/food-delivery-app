@@ -32,13 +32,13 @@ var transitionMap = map[models.OrderStatus][]transition{
 		{To: models.StatusOutForDelivery, AllowedRoles: []models.Role{models.RoleDriver}},
 	},
 	models.StatusOutForDelivery: {
-		{To: models.StatusDelivered, AllowedRoles: []models.Role{models.RoleDriver}},
+		{To: models.StatusDelivered, AllowedRoles: []models.Role{models.RoleDriver, models.RoleCustomer}},
 	},
 	// Terminal states – no transitions allowed from DELIVERED or CANCELLED.
 }
 
 // ValidateTransition checks whether moving from the order's current status to
-// newStatus is allowed, and whether the given role has permission to make 
+// newStatus is allowed, and whether the given role has permission to make
 // that transition.
 //
 // It returns nil on success, or a descriptive error explaining why the

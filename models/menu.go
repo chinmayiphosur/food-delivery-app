@@ -32,4 +32,5 @@ type CreateOrderFromMenuRequest struct {
 	RestaurantID    string             `json:"restaurant_id"`
 	Items           []OrderItemRequest `json:"items"`
 	DeliveryAddress string             `json:"delivery_address"`
+	PaymentMethod   string             `json:"payment_method"`
 }

@@ -44,6 +44,7 @@ type Order struct {
 	Status          OrderStatus    `json:"status" bson:"status"`
 	StatusHistory   []StatusChange `json:"status_history" bson:"status_history"`
 	DeliveryAddress string         `json:"delivery_address" bson:"delivery_address"`
+	PaymentMethod   string         `json:"payment_method" bson:"payment_method"`
 	CreatedAt       time.Time      `json:"created_at" bson:"created_at"`
 	UpdatedAt       time.Time      `json:"updated_at" bson:"updated_at"`
 }
