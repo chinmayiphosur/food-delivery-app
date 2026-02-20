@@ -14,6 +14,8 @@ A robust REST API built in **Go** for managing food delivery orders — similar 
 - **Interactive Dashboard** — Beautiful frontend with role-specific views
 - **Light/Dark Mode** — Sleek theme toggle with persistent preferences
 - **Accessibility Focused** — High-legibility UI with larger font sizes
+- **Payment Options** — Choice of Cash, Card, or QR Code during checkout
+- **Customer Confirmation** — Customers can mark orders as "Delivered" once in transit
 
 ---
 
@@ -47,6 +49,39 @@ A robust REST API built in **Go** for managing food delivery orders — similar 
 | `models/` | Data structures (Order, User, Menu, StatusChange) |
 | `db/` | MongoDB client and CRUD operations |
 | `static/` | Single-page web dashboard for interacting with the API |
+
+---
+
+## Order Lifecycle
+
+The system enforces a strict state machine. Transitions are only possible between specific states and are role-restricted.
+
+```mermaid
+stateDiagram-v2
+    [*] --> PLACED: Customer places order
+    
+    PLACED --> CONFIRMED: Restaurant accepts
+    PLACED --> CANCELLED: Customer cancels
+    
+    CONFIRMED --> PREPARING: Restaurant starts cooking
+    CONFIRMED --> CANCELLED: Rest/Cust cancels
+    
+    PREPARING --> READY_FOR_PICKUP: Restaurant marks ready
+    
+    READY_FOR_PICKUP --> PICKED_UP: Driver picks up
+    
+    PICKED_UP --> OUT_FOR_DELIVERY: Driver starts delivery
+    
+    OUT_FOR_DELIVERY --> DELIVERED: Driver or Customer confirms
+    
+    CANCELLED --> [*]
+    DELIVERED --> [*]
+
+    note right of CONFIRMED
+        Transitions are role-gated.
+        e.g., Only a Driver can move to PICKED_UP.
+    end note
+```
 
 ---
 
@@ -116,7 +151,8 @@ Content-Type: application/json
     {"name": "Margherita Pizza", "quantity": 2, "price": 12.99},
     {"name": "Garlic Bread", "quantity": 1, "price": 4.99}
   ],
-  "delivery_address": "123 Main St, Apt 4B"
+  "delivery_address": "123 Main St, Apt 4B",
+  "payment_method": "Credit Card"
 }
 ```
 
