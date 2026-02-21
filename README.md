@@ -180,6 +180,18 @@ Content-Type: application/json
 
 ---
 
+## AI Development Prompts
+
+This project was developed using agentic AI assistance. Below are 5 key prompts used to shape the core features:
+
+1. **Architecture & Persistence**: "Integrate MongoDB to persist users, orders, and menu items, replacing the initial in-memory storage with the `go.mongodb.org/mongo-driver`."
+2. **Theming**: "Implement a functional Light/Dark mode toggle using CSS variables and JavaScript, ensuring the preference is saved in `localStorage`."
+3. **UX Improvement**: "Update the UI to use a professional, muted slate-blue and gray color palette. Use larger font sizes (base 18px) across all elements to ensure maximum legibility."
+4. **Order Workflow**: "Implement a menu system where restaurants can add dishes with descriptions and prices, and customers can add multiple items to their cart."
+5. **Feature Expansion**: "Add a payment method selection for customers (Cash, Card, QR) and update the state machine to allow customers to confirm delivery themselves once the order is 'Out for Delivery'."
+
+---
+
 ## Tech Stack
 
 | Component | Choice | Reason |
